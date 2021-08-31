@@ -33,6 +33,8 @@ def index(request):
 
 def resolve_alias(request, alias):
     resultado = URLAlias.objects.get(alias=alias)
+    resultado.visitas += 1
+    resultado.save()
 
     # return HttpResponse(f"La URL para el alias {alias} es {resultado.fullurl}")
     return HttpResponseRedirect(resultado.fullurl) 
