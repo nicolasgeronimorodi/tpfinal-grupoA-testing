@@ -1,25 +1,30 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import URLForm
+from .forms import URLForm2
 from .models import URLAlias
+import nanoid
 
 # Create your views here.
+_NANO_DICT = "abcdefz-"
 
 def index(request):
 
 
     if request.method == "POST":
         # Se puede acceder a la informacion del POST de forma
-        # manual
-        # request.POST["nombre"])
-        form = URLForm(request.POST)
+        form = URLForm2(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            fullurl = form.cleaned_data.get("fullurl")
+            url = URLAlias(fullurl=fullurl)
+            alias = nanoid.generate(size=5)
+            url.alias=alias
+            url.save()
+            ctx  = {"title": "Bienvenido al url alias", "url": fullurl, "alias": alias}
+            return render(request, "urlalias/registrado.html", ctx)
         else:
             return HttpResponse("El formulario es invalido") 
     
-    form = URLForm()
+    form = URLForm2()
 
     ctx  = {"title": "Bienvenido al url alias", "form": form}
 	
