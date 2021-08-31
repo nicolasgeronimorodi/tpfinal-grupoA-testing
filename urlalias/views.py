@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .forms import URLForm
+from .models import URLAlias
 
 # Create your views here.
 
@@ -13,7 +14,8 @@ def index(request):
         # request.POST["nombre"])
         form = URLForm(request.POST)
         if form.is_valid():
-            return HttpResponse(f"El formulario es valido") 
+            form.save()
+            return HttpResponseRedirect('/')
         else:
             return HttpResponse("El formulario es invalido") 
     
@@ -23,3 +25,10 @@ def index(request):
 	
 
     return render(request, "urlalias/home.html", ctx)
+
+def resolve_alias(request, alias):
+    resultado = URLAlias.objects.get(alias=alias)
+
+    # return HttpResponse(f"La URL para el alias {alias} es {resultado.fullurl}")
+    return HttpResponseRedirect(resultado.fullurl) 
+

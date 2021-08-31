@@ -10,4 +10,7 @@ class URLAlias(models.Model):
     fullurl = models.TextField(null=False)
     created_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return f"{self.fullurl} - {self.alias}"
+
 
